@@ -21,7 +21,40 @@
       default:throw new Error('Unknown action');
     }
   }
-  const api={checkTrial,evaluateCombination,troubleshoot};
+  const kitDevices={desk:{name:'Desk 6',keyboard:true,mic:false,hours:6,cost:2},media:{name:'Media 4',keyboard:true,mic:true,hours:4,cost:3},touch:{name:'Touch 8',keyboard:false,mic:true,hours:8,cost:4}};
+  const kitTools={text:{name:'Text Pad',text:true,shapes:false,audio:false,cost:1},poster:{name:'Poster Pad',text:true,shapes:true,audio:false,cost:3},voice:{name:'Voice Pad',text:false,shapes:false,audio:true,cost:2}};
+  function evaluateKit(job,device,tool){
+    const jobs={poster:{name:'Club poster',budget:5,hours:5},audio:{name:'Audio reminder',budget:5,hours:3},note:{name:'Text-only note',budget:4,hours:5}};
+    const j=jobs[job],d=kitDevices[device],t=kitTools[tool];if(!j||!d||!t)throw new Error('Unknown kit choice');
+    const checks=[{label:'Readable screen',pass:true}];
+    if(job!=='audio')checks.push({label:'Physical keyboard',pass:d.keyboard},{label:'Typed-text editing',pass:t.text});
+    if(job==='poster')checks.push({label:'Shapes',pass:t.shapes});
+    if(job==='audio')checks.push({label:'Working microphone',pass:d.mic},{label:'Audio recording',pass:t.audio});
+    const cost=d.cost+t.cost;
+    checks.push({label:`Cost: ${d.cost} + ${t.cost} = ${cost} credits; budget ${j.budget}`,pass:cost<=j.budget},{label:`Run time: ${d.hours} hours; minimum ${j.hours}`,pass:d.hours>=j.hours});
+    const fits=checks.every(c=>c.pass);
+    return {fits,checks,cost,hours:d.hours,text:t.text,shapes:t.shapes,audio:t.audio&&d.mic,job:j.name,device:d.name,tool:t.name,message:fits?'Fits every requirement. Explain how the abilities, total cost, and run time support your choice.':'Does not fit the whole job. Read each failed requirement, then change one choice and compare the result.'};
+  }
+  function caseAction(caseId,fixed,action,detail){
+    if(!['preview','locked','delivery'].includes(caseId))throw new Error('Unknown case');
+    const symptoms={preview:'The notice preview stays blank.',locked:'The update cannot be added to the draft.',delivery:'The notice has not been delivered.'};
+    const successes={preview:'The notice preview appears: CLUB NOTICE.',locked:'The update was added to the draft.',delivery:'The notice was delivered.'};
+    if(action==='try')return {fixed,message:fixed?'Original-task verification: '+successes[caseId]:'Original task: '+symptoms[caseId],output:fixed?successes[caseId]:symptoms[caseId]};
+    if(action==='check'){
+      if(!['preview','editing','connection'].includes(detail))throw new Error('Unknown check');
+      const failed=!fixed&&((caseId==='preview'&&detail==='preview')||(caseId==='locked'&&detail==='editing')||(caseId==='delivery'&&detail==='connection'));
+      const value=detail==='preview'?(failed?'hidden':'visible'):detail==='editing'?(failed?'locked':'enabled'):(failed?'disconnected':'connected');
+      return {fixed,message:`Check ${detail}: ${value}. Record this result before choosing a fix.`};
+    }
+    if(action==='fix'){
+      if(!['preview','locked','delivery'].includes(detail))throw new Error('Unknown fix');
+      if(detail!==caseId)return {fixed,message:'That fix does not match this case’s fault. No fault changed. Compare two check results and choose a fix supported by them.'};
+      return {fixed:true,message:'The matching practice setting changed. This is not verification yet: repeat Try original task and record what happens.'};
+    }
+    if(action==='reset')return {fixed:false,message:'Selected case restarted. Writing and evidence history remain. Reproduce the symptom and collect new checks.',output:'Case ready. Try the original task before choosing a fix.'};
+    throw new Error('Unknown case action');
+  }
+  const api={checkTrial,evaluateCombination,troubleshoot,evaluateKit,caseAction};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   root.CSCore=api;
 })(typeof window!=='undefined'?window:globalThis);
