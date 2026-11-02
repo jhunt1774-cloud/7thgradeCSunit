@@ -1,0 +1,15 @@
+{
+  "assertions": 1204,
+  "html_files": 6,
+  "local_and_source_links": 189,
+  "external_links_not_live_probed": [
+    "https://education.ohio.gov/getattachment/Topics/Learning-in-Ohio/Computer-Science/Ohio-s-Learning-Standards-in-Computer-Science/2022-Grade-7-CS-Standards.pdf.aspx?lang=en-US",
+    "https://www.peardeck.com/product-updates/pear-assessment-october-2024"
+  ],
+  "verified_standards": 42,
+  "implemented_standards": 3,
+  "planned_standards": 39,
+  "knowledge_items": 22,
+  "assignment_audit_rows": 33,
+  "tracker_days": 45
+}

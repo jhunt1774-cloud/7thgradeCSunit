@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "assertions": 472,
+  "knowledge_choices": 88,
+  "empty_answer_checks": 22,
+  "typing_trials": 6,
+  "combination_outcomes": 16,
+  "troubleshooting_sequences": 2,
+  "downloads": 5,
+  "copy_exports": 5,
+  "print_controls": 5,
+  "hash_targets": 29,
+  "javascript_errors": [],
+  "viewports": [
+    "1366x850",
+    "390x844"
+  ],
+  "tested_browser": "156.0.8078.79",
+  "method": "Headless installed Chrome via Playwright; file URL and project-prefix local HTTP",
+  "external_core_requests": 0,
+  "limits": [
+    "Not a physical managed Chromebook or old Chrome version",
+    "No live Pear Assessment account import",
+    "No classroom pacing pilot",
+    "Print button tested by intercepting window.print; native print dialog not automated"
+  ]
+}
